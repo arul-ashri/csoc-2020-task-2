@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect    
 from django.contrib.auth import login,logout,authenticate
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
@@ -16,9 +16,9 @@ def loginView(request):
             login(request,user)
             return redirect('/')
         else:
-            return render(request, 'login.html', {'error':"UserName and Password didn't match"})
+            return render(request, 'registration/login.html', {'error':"Invalid UserName or Password"})
     else:
-        return render(request, 'login.html', {})
+        return render(request, 'registration/login.html', {})
 @login_required
 def logoutView(request):
     logout(request)
@@ -34,9 +34,9 @@ def registerView(request):
             lastname=request.POST['lastname']
             email=request.POST['email']
         except:
-            return render(request,'register.html',{'msg':"Don't leave any field blank"})
+            return render(request,'registration/register.html',{'msg':"Fill All The Fields"})
         if password1 != password2:
-            return render(request, 'register.html', { 'msg': "Passwords not matching" })
+            return render(request, 'registration/register.html', { 'msg': "Passwords not matching" })
         try:
             user = User.objects.create_user(
                 username = username,
@@ -47,12 +47,12 @@ def registerView(request):
             )
             user.save()
         except:
-            return render(request, 'register.html', { 'msg': "Username already exists" })
+            return render(request, 'registration/register.html', { 'msg': "Username already exists" })
         user = authenticate(request, username=username, password=password1)
         if user is not None:
             login(request, user)
             return redirect('/')
         else:
-            return render(request, 'register.html', { 'msg': "User created Successfully" })
+            return render(request, 'registration/register.html', { 'msg': "User created Successfully" })
     else:
-        return render(request, 'register.html') 
+        return render(request, 'registration/register.html')
