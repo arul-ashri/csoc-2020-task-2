@@ -2,14 +2,14 @@
 
 {% block content %}
 <h1>Login here :</h1>
-<form method="post" action="{% url 'signin' %}">
+<form method="post" action="{% url 'login' %}">
           {% csrf_token %}
           {# A more "HTML" way of creating the login form#}
           <label for="username">Username:</label>
-          <input type="text" name="username" placeholder="Username">
+          <input type="text" name="username" placeholder="Username"><br>
           <label for="password">Password:</label>
-          <input type="password" name="password" placeholder="Password">
+          <input type="password" name="password" placeholder="Password"><br><br>
           <input type="submit" name="" value="Login">
-          <div id="error" style="color: red;">{%if error%}{{error}}{%endif%}</div>
+          <div id="error" >{%if error%}{{error}}{%endif%}</div>
 </form>
-{% endblock %
+{% endblock %}

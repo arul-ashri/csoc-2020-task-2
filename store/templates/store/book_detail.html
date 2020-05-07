@@ -19,31 +19,67 @@
     <dt>MRP:</dt>
     <dd>Rs. {{ book.mrp }}</dd>
     <dt>Available Copies:</dt>
-    <dd>{{ num_available }}</dd>
+	<dd>{{ num_available }}</dd>
+	<dt>Rating Given By You:</dt>
+	<dd><input type="number" name="rating" value="{{user_rating}}" required="" id="id_rating"><button type="submit" id="rating_submit">Submit</button></dd>
 </dl>
 <button class="btn btn-primary" id="loan-button">Loan {{ book.title }}</button>
 <script>
-$("#loan-button").click(function(){
-    $.ajax({
-		url: "{% url 'loan-book' %}",
-		method: "POST",
-		data: {
-			bid: {{ book.id }}
-		},
-		success: function(data, status, xhr){
-			if(data['message'] == "success"){
-                alert("Book successfully issued");
-                window.location.replace("/books/loaned");
+$("#rating_submit").click(function(){
+		var rating_user= $("#id_rating").val();
+		if(rating_user<=10&&rating_user>=0)
+		{
+		$.ajax({
+			url: "{% url 'book-rating' %}",
+			method: "POST",
+			data: {
+				bid: {{ book.id }},
+				rating: rating_user
+			},
+			success: function(data, status, xhr){
+				if(data['message'] == "success"){
+					window.location.reload();
+				}
+				else{
+					alert("Rating is unable to update");
+				}
+			},
+			error: function(xhr, status, err){
+				alert("PLease login first");
 			}
-			else{
-				alert("Unable to issue this book");
-			}
-		},
-		error: function(xhr, status, err){
-			alert("Some error occured");
-		}
-
+	
+		})
+	}
+	else
+	alert("Rating Must be between 0-10 ")
 	})
+
+$("#loan-button").click(function(){
+	if( {{num_available}} ){
+
+       $.ajax({
+	    	url: "{% url 'loan-book' %}",
+	 	    method: "POST",
+		    data: {
+			    bid: {{ book.id }}
+		    },
+		    success: function(data, status, xhr){
+			    if(data['message'] == "success"){
+            alert("Book is issued");
+            window.location.replace("/books/loaned");
+		     	}
+			    else{
+				   alert("Unable to issue this book");
+			    }
+	     	},
+		    error: function(xhr, status, err){
+			     alert("please Login First");
+		    }
+
+    	})
+	}else{
+		alert('sorry, out of books ');
+	}	
 })
 </script>
 {% endblock %}
